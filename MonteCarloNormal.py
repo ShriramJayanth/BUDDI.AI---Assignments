@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
 import math
 a=1
 count=[10,100,1000,10000,100000,1000000]
@@ -15,20 +17,7 @@ for i in count:
         while(y<(-0.5) or y>0.5):
             y=np.random.normal(0.1)
         X.append(x)
-        Y.append(y)        
-    # X=np.clip(X_sample,-0.5,0.5)
-    # Y=np.clip(Y_sample,-0.5,0.5)
-    # while(len(X)<i):
-    #     X_sample=[np.random.normal(0,1) for _ in range(i)]
-    #     X=np.clip(X_sample,-0.5,0.5)
-    # while(len(Y)<i):
-    #     Y_sample=[np.random.normal(0,1) for _ in range(i)]
-    #     Y=np.clip(Y_sample,-0.5,0.5)
-    # while(len(X)>i):
-    #     X.pop()
-    # while(len(Y)>i):
-    #     Y.pop()     
-    # print(X,Y)       
+        Y.append(y)              
     OnTarget=0    
     for j,k in zip(X,Y):
         if(((j**2+k**2)**(1/2))<=0.5):
@@ -37,6 +26,8 @@ for i in count:
 
 print(Pi_Cap)
 print(count)
+Mc=pd.DataFrame({"Number of Darts":count,"Estimated value of Pi":Pi_Cap})
+Mc.to_csv('MonteCarloNormal.csv',index=False)
 plt.plot(count, Pi_Cap, marker='D', linestyle='-',label='Estimated Value of Pi')
 plt.axhline(y=math.pi,color="black",linestyle="--")
 plt.title("Monte Carlo Simulations")
