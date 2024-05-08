@@ -1,0 +1,13 @@
+6
+ABCD
+1 
+EFGH
+2
+IJKL
+4
+MNOP
+6
+QRST
+11
+UVWXYZ
+3
