@@ -6,10 +6,10 @@
 
 ## Index
 
- - [Grid Search Implementation](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
- - [Monte Carlo Simulation](https://github.com/matiassingers/awesome-readme)
- - [Random Sampler](https://bulldogjob.com/news/449-how-to-write-a-good-readme-for-your-github-project)
+ - [Grid Search Implementation](https://github.com/ShriramJayanth/BUDDI.AI---Assignments/tree/main/Grid%20search%20Implementation)
+ - [Monte Carlo Simulation](https://github.com/ShriramJayanth/BUDDI.AI---Assignments/tree/main/Monte%20Carlo%20Simulation)
+ - [Random Sampler](https://github.com/ShriramJayanth/BUDDI.AI---Assignments/tree/main/Normal%20Distribution%20Visualizationt)
 - [Normal Distribution Visualization](https://bulldogjob.com/news/449-how-to-write-a-good-readme-for-your-github-project)
-- [Bias-Variance Tradeoff](https://bulldogjob.com/news/449-how-to-write-a-good-readme-for-your-github-project)
+- [Bias-Variance Tradeoff](https://github.com/ShriramJayanth/BUDDI.AI---Assignments/tree/main/Bias-Variance%20TradeOff)
 
 
