@@ -110,6 +110,6 @@ xActual,yActual=xyGenerator(-5,5,100,degree)
 #splitting the data
 xTrain, xTest, yTrain, yTest = train_test_split(xActual, yActual, test_size=0.2)
 
-plotPolyNomialRegression(xTrain,yTrain,xActual,yActual,degree)
-# plotBiasVarianceGraph(xTrain,yTrain,xTest,yTest,degree)
+# plotPolyNomialRegression(xTrain,yTrain,xActual,yActual,degree)
+plotBiasVarianceGraph(xTrain,yTrain,xTest,yTest,degree)
 
