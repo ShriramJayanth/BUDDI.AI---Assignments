@@ -25,5 +25,9 @@ Variance tends to increase because the model becomes more sensitive to small flu
 There's a point where bias and variance are both minimized, resulting in the optimal model complexity for the given problem. Beyond this point, increasing the complexity leads to overfitting, where variance dominates and performance on unseen data deteriorates.
 By analyzing the bias-variance tradeoff, you can make informed decisions about model complexity and regularization techniques to achieve better generalization performance.
 
+![image](https://github.com/ShriramJayanth/BUDDI.AI---Assignments/assets/131799455/d6dac6a5-5512-471a-bdab-0de38aae79bc)
+![image](https://github.com/ShriramJayanth/BUDDI.AI---Assignments/assets/131799455/bb0b5554-50f8-4774-b4cd-7bc544987838)
+
+
 
 
