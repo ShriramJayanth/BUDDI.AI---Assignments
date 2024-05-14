@@ -13,7 +13,7 @@ Evaluate the model's performance using cross-validation or a separate validation
 Record the performance metric (such as accuracy, loss, or other evaluation metrics) for the current combination of hyperparameters.
 Select Best Model: After evaluating all combinations, select the combination of hyperparameters that resulted in the best performance metric.
 
-## In the context of your code:
+## In the context of my code:
 
 Define Grid: The grid consists of the possible values of b1 and b2, ranging from -1 to 1 with a step size of 0.01.
 
