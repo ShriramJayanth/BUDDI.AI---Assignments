@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # generating x and y values
-def xyGenerator(start:int,stop:int,num:int)->list[np.array]:
+def xyGenerator(start:int,stop:int,num:int)->list[np.array,np.array]:
     xActual=[]
     yActual=[]
     for i in np.linspace(start,stop,num):
@@ -43,7 +43,7 @@ def findNewBeta0(xActual:np.array,yActual:np.array,beta0:int,beta1:int)->int:
 
 
 # finding beta values using gradient descent
-def findBetaGradientDescent(xActual:np.array,yActual:np.array,eta:int):
+def findBetaGradientDescent(xActual:np.array,yActual:np.array,eta:int)->list[int,int,np.array,np.array,np.array]:
     err=[]
     epo=[]
     b1=[]
@@ -76,7 +76,7 @@ def findBetaGradientDescent(xActual:np.array,yActual:np.array,eta:int):
             error=newError
     # plotting Error Epochs graph         
     plt.plot(epo[5:],err[5:],label=f"Error at eta : {eta}")
-    return beta0,beta1,error,epoch,eta,np.array(b0),np.array(b1),np.array(err)
+    return epoch,eta,np.array(b0),np.array(b1),np.array(err)
 
 # function to plot Error vs Epochs graph
 def plotEpochsErrorGraph(xActual:np.array,yActual:np.array)->None:
@@ -85,11 +85,11 @@ def plotEpochsErrorGraph(xActual:np.array,yActual:np.array)->None:
     findBetaGradientDescent(xActual,yActual,0.04)
     # adding labels
     plt.xlabel("Epochs (linear scale)")
-    plt.ylabel("Error (linear scale)")
+    plt.ylabel("Epsilon (linear scale)")
     plt.title("Error Rate During Training")
     plt.legend()
     # adding description
-    plt.figtext(0.5, 0.01, 'This graph illustrates the training loss of a machine learning model over successive training epochs. The x-axis represents the number of training epochs,\n while the y-axis denotes the corresponding error or loss value. As training progresses, the model learns to minimize its loss function,\n resulting in a decrease in error over time. This visualization provides insights into the training dynamics and convergence behavior of the model.', fontsize=12, color='black', ha='center')
+    plt.figtext(0.5, 0.01, 'This graph illustrates the training loss of a machine learning model over successive training epochs. As training progresses, the model learns to minimize its loss function,\n resulting in a decrease in error over time. This visualization provides insights into the training dynamics and convergence behavior of the model. as learning rate increases number of epochs gets reduced', fontsize=12, color='black', ha='center')
     plt.show()
 
 # function to plot error surface plot in after gradient descent
@@ -124,11 +124,11 @@ def main():
     print(f"B1: {cf[1]}")
     print(f"Error:{error}")
     print("\nBeta values of Gradient Descent\n")
-    print(f"Bo: {gd[0]}")
-    print(f"B1: {gd[1]}")     
-    print(f"Error: {gd[2]}")
-    print(f"Epochs: {gd[3]}")
-    print(f"eta: {gd[4]}")
+    print(f"Bo: {gd[-3][-1]}")
+    print(f"B1: {gd[-2][-1]}")     
+    print(f"Error: {gd[-1][-1]}")
+    print(f"Epochs: {gd[0]}")
+    print(f"eta: {gd[1]}")
 
     plotErrorSurface(gd[-3],gd[-2],gd[-1])
 
