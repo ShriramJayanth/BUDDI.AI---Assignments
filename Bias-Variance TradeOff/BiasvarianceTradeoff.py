@@ -11,17 +11,9 @@ def findError(betaVals, x, y):
         for k in range(len(betaVals)):
             pred+=betaVals[k]*(x[:,1][j]**k)
         bias.append(pred) 
-    bias=np.array(bias)   
+    bias=np.array(bias)
     # returning the mean square error
     return np.mean((bias-y)**2)
-
-# A function to find the predicted values using Beta values
-def findPred(betaVals,xActual):
-    x=xActual[:,1]
-    predictions = np.zeros_like(x)
-    for k in range(len(betaVals)):
-        predictions+=betaVals[k]*(x ** k)
-    return predictions
 
 # A function to find beta values for a given degree
 def findBeta(degree,xData,yData):
@@ -32,6 +24,14 @@ def findBeta(degree,xData,yData):
     firstPart = np.linalg.inv(np.matmul(xTranspose, x))
     secondPart = np.matmul(xTranspose, yData)
     return np.matmul(firstPart, secondPart)
+
+# A function to find the predicted values using Beta values
+def findPred(betaVals,xActual):
+    x=xActual[:,1]
+    predictions = np.zeros_like(x)
+    for k in range(len(betaVals)):
+        predictions+=betaVals[k]*(x ** k)
+    return predictions
 
 # A function to plot the ploynomial regression with multiple degrees
 def plotPolyNomialRegression(xTrain,yTrain,xActual,yActual,degree):
