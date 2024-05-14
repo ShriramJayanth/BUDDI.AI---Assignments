@@ -43,7 +43,7 @@ def plotMonteCarloSimulation(counts,piCap):
     plt.ylabel('Estimated Value of Pi')
     plt.legend()
     # Add a description below the plot
-    plt.figtext(0.5, 0.01, 'As the number of random points increases, the estimated value of π converges towards the actual value of π (approximately 3.14159). This convergence demonstrates the principle of the Monte Carlo method, where more iterations lead to more accurate estimates.', fontsize=12, color='red', ha='center')
+    plt.figtext(0.5, 0.01, 'As the number of random points increases, the estimated value of π converges towards the actual value of π (approximately 3.14159).\n This convergence demonstrates the principle of the Monte Carlo method, where more iterations lead to more accurate estimates.', fontsize=12, color='red', ha='center')
     plt.show()
 
 # Main part of the code
