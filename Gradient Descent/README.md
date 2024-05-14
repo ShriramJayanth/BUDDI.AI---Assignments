@@ -24,3 +24,8 @@ Update Parameters: update beta0 and beta1 by subtracting the gradient multiplied
 Repeat: repeat the process until convergence, where convergence is determined by a small change in the error or reaching a maximum number of epochs.
 
 This process iteratively adjusts the parameters of the model to minimize the error between the predicted and actual values, ultimately finding the optimal parameters for the linear regression model.
+
+![image](https://github.com/ShriramJayanth/BUDDI.AI---Assignments/assets/131799455/92af9c56-926e-4dec-b799-0cad5ca3b8d3)
+![image](https://github.com/ShriramJayanth/BUDDI.AI---Assignments/assets/131799455/9f9c0ddb-a6c5-4edf-a200-2c21eeb4b2eb)
+
+
