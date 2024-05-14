@@ -24,3 +24,5 @@ It records the epsilon value for each combination.
 Select Best Model: After evaluating all combinations, the function selects the combination of b1 and b2 that resulted in the minimum epsilon value. This combination represents the optimal model parameters that minimize the error for the given dataset.
 
 Grid search provides a systematic approach to find the optimal hyperparameters for a model by exhaustively searching through a predefined grid of hyperparameter values. In your code, it helps to identify the optimal b1 and b2 values that minimize the error, allowing you to fit the best linear model to the dataset.
+
+![image](https://github.com/ShriramJayanth/BUDDI.AI---Assignments/assets/131799455/e6867d60-fc95-45df-8015-9a5c1d13623a)
