@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 
 # generating x and y values
-def xyGenerator(start:int,stop:int,num:int)->list[np.array,np.array]:
+def xyGenerator(ran:range,num:int)->list[np.array,np.array]:
     xActual=[]
     yActual=[]
-    for i in np.linspace(start,stop,num):
+    for i in np.linspace(ran.start,ran.stop,num):
         xActual.append(i)
         yActual.append((2*i)-3+np.random.normal(0,5))
     return np.array(xActual),np.array(yActual)
@@ -37,6 +37,7 @@ def findNewBeta0(xActual:np.array,yActual:np.array,beta0:float,beta1:float)->int
     grad_beta0=-2*np.mean(yActual-predVals)
     return grad_beta0
 
+#printing all the parameters
 def printDetails(title:str,beta0:float,beta1:float,bias:float,variance:float,epoch:int,eta:float):
     print(f"\nBeta values of {title} Gradient Descent\n")
     print(f"Bo: {beta0}")
@@ -51,7 +52,7 @@ def gradientDescent(xTrain:np.array,yTrain:np.array,xTest:np.array,yTest:np.arra
     bias=[]
     variance=[]
     epo=[]
-    #generate random b1 and b2
+    #generate random b0 and b1
     beta0=np.random.normal(0,1)
     beta1=np.random.normal(0,1)
     error=findError(xTrain,yTrain,beta0,beta1)
@@ -59,7 +60,7 @@ def gradientDescent(xTrain:np.array,yTrain:np.array,xTest:np.array,yTest:np.arra
     epoch=0
     #gradient descent loop
     while(flag):
-        #calculating new b1 and b2
+        #calculating new b0 and b1
         beta0-=(eta*findNewBeta0(xTrain,yTrain,beta0,beta1))
         beta1-=(eta*findNewBeta1(xTrain,yTrain,beta0,beta1))
         # storing epochs,bias,variances for all iterations
@@ -82,10 +83,9 @@ def gradientDescent(xTrain:np.array,yTrain:np.array,xTest:np.array,yTest:np.arra
     addLabels("Epochs (linear scale)","Epsilon (linear scale)","Error Rate During Training using batch method gradient descent",'This graph illustrates the training loss of a machine learning model over successive training epochs. As training progresses, the model learns to minimize its loss function,\n resulting in a decrease in error over time. Tshis visualization provides insights into the training dynamics and convergence behavior of the model')
 
 def miniBatchGradientDescent(xTrain: np.array, yTrain: np.array, xTest: np.array, yTest: np.array, eta: float, batch_size: int) -> None:
-    steps = []
-    bias = []
-    variance = []
+    steps,bias,variance=[],[],[]
     step = 0
+    #generating random b0 and b1
     beta0=np.random.normal(0,1)
     beta1=np.random.normal(0,1)
     error=error=findError(xTrain,yTrain,beta0,beta1)
@@ -124,10 +124,8 @@ def miniBatchGradientDescent(xTrain: np.array, yTrain: np.array, xTest: np.array
     addLabels("Steps (linear scale)","Epsilon (linear scale)","Error Rate During Training using mini Batch gradient descent",'This graph illustrates the training loss of a machine learning model over successive training epochs. As training progresses, the model learns to minimize its loss function,\n resulting in a decrease in error over time. This visualization provides insights into the training dynamics and convergence behavior of the model.')
 
 def stochiasticGradientDescent(xTrain:np.array,yTrain:np.array,xTest:np.array,yTest:np.array,eta:float)->None:
-    steps=[]
-    bias=[]
-    variance=[]
-    #generate random b1 and b2
+    steps,bias,variance=[],[],[]
+    #generate random b0 and b1
     beta0=np.random.normal(0,1)
     beta1=np.random.normal(0,1)
     error=findError(xTrain,yTrain,beta0,beta1)
@@ -169,7 +167,7 @@ def addLabels(xlabel:str,ylabel:str,title:str,desc:str)->None:
     plt.show()
 
 def main():
-    xActual,yActual=xyGenerator(-5,5,1000)
+    xActual,yActual=xyGenerator(range(-5,5),1000)
     xTrain, xTest, yTrain, yTest = train_test_split(xActual, yActual, test_size=0.2)
     #finding beta values using gradient descent
     xMatrix=[]
