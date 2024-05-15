@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
 
 # generating x and y values
 def xyGenerator(start:int,stop:int,num:int)->list[np.array,np.array]:
@@ -7,130 +8,186 @@ def xyGenerator(start:int,stop:int,num:int)->list[np.array,np.array]:
     yActual=[]
     for i in np.linspace(start,stop,num):
         xActual.append(i)
-        yActual.append((2*i)-3+np.random.normal(0,5))   
+        yActual.append((2*i)-3+np.random.normal(0,5))
     return np.array(xActual),np.array(yActual)
 
 # Calculating Beta values using closed form solution
-def findBetaClosedForm(xActual:np.array,yActual:np.array,degree:int)->np.array:
-    xMatrix=[]
-    for i in xActual:
-        xMatrix.append([i**j for j in range(degree+1)])
-    # closed form solution
-    xMatrix=np.array(xMatrix)
+def findBetaClosedForm(xMatrix:np.array,yActual:np.array)->np.array:
     xTranspose=xMatrix.transpose()
     firstPart = np.linalg.inv(np.matmul(xTranspose, xMatrix))
     secondPart = np.matmul(xTranspose, yActual)
     return np.matmul(firstPart, secondPart)
 
 # Calculating mean sum of error square
-def findError(xActual:np.array,yActual:np.array,beta0:int,beta1:int)->int:
+def findError(xActual:np.array,yActual:np.array,beta0:float,beta1:float)->int:
     predvals=(xActual*beta1)+beta0
     return np.mean((yActual-predvals)**2)
 
 # Function to find new beta1 after performing partial differentiation
-def findNewBeta1(xActual:np.array, yActual:np.array, beta0:int, beta1:int)->int:
+def findNewBeta1(xActual:np.array, yActual:np.array, beta0:float, beta1:float)->int:
     # substituting x on equation obtained by partial differentiation on beta1
     predVals=(beta1*xActual)+beta0
     grad_beta1=-2*np.mean(xActual*(yActual-predVals))
     return grad_beta1
 
 # Function to find new beta0 after performing partial differentiation
-def findNewBeta0(xActual:np.array,yActual:np.array,beta0:int,beta1:int)->int:
+def findNewBeta0(xActual:np.array,yActual:np.array,beta0:float,beta1:float)->int:
     # substituting x on equation obtained by partial differentiation on beta0
     predVals=(beta1*xActual)+beta0
     grad_beta0=-2*np.mean(yActual-predVals)
     return grad_beta0
 
+def printDetails(title:str,beta0:float,beta1:float,bias:float,variance:float,epoch:int,eta:float):
+    print(f"\nBeta values of {title} Gradient Descent\n")
+    print(f"Bo: {beta0}")
+    print(f"B1: {beta1}")     
+    print(f"Bias: {bias}")
+    print(f"Variance: {variance}")
+    print(f"epochs: {epoch}")
+    print(f"eta: {eta}")
 
 # finding beta values using gradient descent
-def findBetaGradientDescent(xActual:np.array,yActual:np.array,eta:int)->list[int,int,np.array,np.array,np.array]:
-    err=[]
+def gradientDescent(xTrain:np.array,yTrain:np.array,xTest:np.array,yTest:np.array,eta:float)->None:
+    bias=[]
+    variance=[]
     epo=[]
-    b1=[]
-    b0=[]
     #generate random b1 and b2
     beta0=np.random.normal(0,1)
     beta1=np.random.normal(0,1)
-    error=findError(xActual,yActual,beta0,beta1)
+    error=findError(xTrain,yTrain,beta0,beta1)
     flag=True
     epoch=0
     #gradient descent loop
     while(flag):
         #calculating new b1 and b2
-        newBeta0=beta0-(eta*findNewBeta0(xActual,yActual,beta0,beta1))
-        newBeta1=beta1-(eta*findNewBeta1(xActual,yActual,beta0,beta1))
-        newError=findError(xActual,yActual,newBeta0,newBeta1)
-        beta0=newBeta0
-        beta1=newBeta1
+        beta0-=(eta*findNewBeta0(xTrain,yTrain,beta0,beta1))
+        beta1-=(eta*findNewBeta1(xTrain,yTrain,beta0,beta1))
+        # storing epochs,bias,variances for all iterations
+        bias.append(findError(xTrain,yTrain,beta0,beta1))
+        variance.append(findError(xTest,yTest,beta0,beta1))
         epoch+=1
-        # storing epochs,b0,b1,error for all iterations
         epo.append(epoch)
-        err.append(newError)
-        b0.append(beta0)
-        b1.append(beta1)
         # print(f"b0:{beta0} b1:{beta1}")
         #loop runs till difference between new error and old error is less than 0.001 
-        if(abs(error-newError)<10e-6 or newError<0.0001):
+        if(abs(error-bias[-1])<10e-6 or bias[-1]<0.0001):
             flag=False
         else:
-            error=newError
+            error=bias[-1]     
+    #printing details
+    printDetails("batch method",beta0,beta1,bias[-1],variance[-1],epoch,eta)           
+    # plotting Error Epochs graph        
+    plt.plot(epo[5:],bias[5:],label=f"bias at eta : {eta}")
+    plt.plot(epo[5:],variance[5:],label=f"variance at eta : {eta}")
+    #adding labels
+    addLabels("Epochs (linear scale)","Epsilon (linear scale)","Error Rate During Training using batch method gradient descent",'This graph illustrates the training loss of a machine learning model over successive training epochs. As training progresses, the model learns to minimize its loss function,\n resulting in a decrease in error over time. Tshis visualization provides insights into the training dynamics and convergence behavior of the model')
+
+def miniBatchGradientDescent(xTrain: np.array, yTrain: np.array, xTest: np.array, yTest: np.array, eta: float, batch_size: int) -> None:
+    steps = []
+    bias = []
+    variance = []
+    step = 0
+    beta0=np.random.normal(0,1)
+    beta1=np.random.normal(0,1)
+    error=error=findError(xTrain,yTrain,beta0,beta1)
+    #finding number of batches
+    numBatches=len(xTrain)//batch_size
+    flag=True
+    step=0
+    epoch=0
+    #gradient loop
+    while(flag):
+        for batch_index in range(numBatches):
+            # Create batch
+            start_index = batch_index * batch_size
+            end_index = min((batch_index + 1) * batch_size, len(xTrain))
+            xTemp = xTrain[start_index:end_index]
+            yTemp = yTrain[start_index:end_index]
+            # Update parameters
+            beta0 -= (eta * findNewBeta0(xTemp, yTemp, beta0, beta1))
+            beta1 -= (eta * findNewBeta1(xTemp, yTemp, beta0, beta1))
+        # Calculate error for training and testing data after each epoch
+            bias.append(findError(xTrain, yTrain, beta0, beta1))
+            variance.append(findError(xTest, yTest, beta0, beta1))
+            step+=1
+            steps.append(step) 
+        epoch+=1      #increament epochs
+        if(abs(error-bias[-1])<10e-6 or bias[-1]<0.0001):
+            flag=False
+        else:
+            error=bias[-1]
+    #printing details        
+    printDetails("Mini batch method",beta0,beta1,bias[-1],variance[-1],epoch,eta)
+    # plotting Error Epochs graph      
+    plt.plot(steps[5:], bias[5:], label=f"bias at eta : {eta}")
+    plt.plot(steps[5:], variance[5:], label=f"variance at eta : {eta}")
+    #adding labels
+    addLabels("Steps (linear scale)","Epsilon (linear scale)","Error Rate During Training using mini Batch gradient descent",'This graph illustrates the training loss of a machine learning model over successive training epochs. As training progresses, the model learns to minimize its loss function,\n resulting in a decrease in error over time. This visualization provides insights into the training dynamics and convergence behavior of the model.')
+
+def stochiasticGradientDescent(xTrain:np.array,yTrain:np.array,xTest:np.array,yTest:np.array,eta:float)->None:
+    steps=[]
+    bias=[]
+    variance=[]
+    #generate random b1 and b2
+    beta0=np.random.normal(0,1)
+    beta1=np.random.normal(0,1)
+    error=findError(xTrain,yTrain,beta0,beta1)
+    step=0
+    random_indices = np.random.choice(len(xTrain), size=len(xTrain), replace=True)
+    epoch=0
+    flag=True
+    #gradient descent loop
+    while(flag):
+        for i in random_indices:
+            beta0-=(eta*findNewBeta0(xTrain[i],yTrain[i],beta0,beta1))
+            beta1-=(eta*findNewBeta1(xTrain[i],yTrain[i],beta0,beta1))
+            step+=1
+            steps.append(step)
+            bias.append(findError(xTrain,yTrain,beta0,beta1))   
+            variance.append(findError(xTest,yTest,beta0,beta1)) 
+        epoch+=1
+        if(abs(error-bias[-1])<10e-6 or bias[-1]<0.0001):
+            flag=False
+        else:
+            error=bias[-1]
+    #printing details
+    printDetails("Stochiastic",beta0,beta1,bias[-1],variance[-1],epoch,eta)  
     # plotting Error Epochs graph         
-    plt.plot(epo[5:],err[5:],label=f"Error at eta : {eta}")
-    return epoch,eta,np.array(b0),np.array(b1),np.array(err)
+    plt.plot(steps[5:],bias[5:],label=f"bias at eta : {eta}")
+    plt.plot(steps[5:],variance[5:],label=f"variance at eta : {eta}")
+    #adding labels
+    addLabels("Steps (linear scale)","Epsilon (linear scale)","Error Rate During Training using stochiastic gradient descent",'This graph illustrates the training loss of a machine learning model over successive training epochs. As training progresses, the model learns to minimize its loss function,\n resulting in a decrease in error over time. This visualization provides insights into the training dynamics and convergence behavior of the model.')
 
 # function to plot Error vs Epochs graph
-def plotEpochsErrorGraph(xActual:np.array,yActual:np.array)->None:
-    findBetaGradientDescent(xActual,yActual,0.02)
-    findBetaGradientDescent(xActual,yActual,0.03)
-    findBetaGradientDescent(xActual,yActual,0.04)
+def addLabels(xlabel:str,ylabel:str,title:str,desc:str)->None:
     # adding labels
-    plt.xlabel("Epochs (linear scale)")
-    plt.ylabel("Epsilon (linear scale)")
-    plt.title("Error Rate During Training")
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
     plt.legend()
     # adding description
-    plt.figtext(0.5, 0.01, 'This graph illustrates the training loss of a machine learning model over successive training epochs. As training progresses, the model learns to minimize its loss function,\n resulting in a decrease in error over time. This visualization provides insights into the training dynamics and convergence behavior of the model. as learning rate increases number of epochs gets reduced', fontsize=12, color='black', ha='center')
+    plt.figtext(0.5, 0.01, desc, fontsize=12, color='black', ha='center')
     plt.show()
-
-# function to plot error surface plot in after gradient descent
-def plotErrorSurface(b0:np.array,b1:np.array,epsilon:np.array)->None:
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    ax.plot_trisurf(b0,b1,epsilon,cmap="viridis",edgecolor='none')
-    # as there are no legends in 3d surface plot , adding a dummy legend
-    ax.scatter([], [], [],label='Error Surface')
-    # adding labels
-    ax.set_xlabel("b0 (Linear scale)")
-    ax.set_ylabel("b1 (Linear scale)")
-    ax.set_zlabel("Epsilon (Linear scale)")
-    ax.set_title("Error surface plot")
-    ax.legend()
-    # adding description
-    plt.figtext(0.5, 0.01, 'This graph shows the Epsilon value for each and every beta values checked while performing gradient descent', fontsize=12, color='black', ha='center')
-    plt.show()
-
 
 def main():
     xActual,yActual=xyGenerator(-5,5,1000)
+    xTrain, xTest, yTrain, yTest = train_test_split(xActual, yActual, test_size=0.2)
     #finding beta values using gradient descent
-    gd=findBetaGradientDescent(xActual,yActual,0.01)
+    xMatrix=[]
+    for i in xTrain:
+        xMatrix.append([1,i])
+    xMatrix=np.array(xMatrix)    
     #finding beta values using closed form solution
-    cf=findBetaClosedForm(xActual,yActual,1)
-    error=findError(xActual,yActual,cf[0],cf[1])
-    plotEpochsErrorGraph(xActual,yActual)
-
+    cf=findBetaClosedForm(xMatrix,yTrain)
+    bias=findError(xTrain,yTrain,cf[0],cf[1])
+    variance=findError(xTest,yTest,cf[0],cf[1])
     print("Beta values of Closed form solution\n")
     print(f"Bo: {cf[0]}")
     print(f"B1: {cf[1]}")
-    print(f"Error:{error}")
-    print("\nBeta values of Gradient Descent\n")
-    print(f"Bo: {gd[-3][-1]}")
-    print(f"B1: {gd[-2][-1]}")     
-    print(f"Error: {gd[-1][-1]}")
-    print(f"Epochs: {gd[0]}")
-    print(f"eta: {gd[1]}")
-
-    plotErrorSurface(gd[-3],gd[-2],gd[-1])
+    print(f"Bias:{bias}")
+    print(f"Variance:{variance}")
+    gradientDescent(xTrain,yTrain,xTest,yTest,0.001)
+    stochiasticGradientDescent(xTrain,yTrain,xTest,yTest,0.001)
+    miniBatchGradientDescent(xTrain,yTrain,xTest,yTest,0.001,50)
 
 if __name__=="__main__":
     main()
