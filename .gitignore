@@ -4,5 +4,4 @@ lib64
 include
 share
 pyvenv.cfg
-sample.py
 sample.ipynb
